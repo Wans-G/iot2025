@@ -4,6 +4,9 @@ import numpy as np
 from Grid import HexGrid
 import random
 
+# Dependencies: Python, pygame, numpy
+
+
 screenDimention = (1280, 720)
 center = (screenDimention[0] / 2, screenDimention[1] / 2)
 
