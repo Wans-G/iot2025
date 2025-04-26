@@ -64,7 +64,13 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    game.nextTurn()
         
+
+
+        # render
         screenX, screenY = screen.get_size()
         center = (screenX / 2, screenY / 2)
         scaleX, scaleY = (screenX / screenDimention[0] * 2, screenY / screenDimention[1] * 2)
@@ -92,7 +98,7 @@ def main():
 
         pygame.display.flip()
 
-        clock.tick(30)  # limits FPS to 60
+        clock.tick(30)  # limits FPS to 30
 
     pygame.quit()
 
