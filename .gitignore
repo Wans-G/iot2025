@@ -1,2 +1,5 @@
 game_logic/__pycache__/Grid.cpython-311.pyc
 game_logic/__pycache__/Pieces.cpython-311.pyc
+game_logic/split_img/roads/*
+game_logic/split_img/towns/*
+game_logic/split_img/tiles/*
