@@ -14,6 +14,7 @@ tokenOrder = [5,2,6,3,8,10,9,12,11,4,8,10,9,4,5,6,3,11]
 
 test_map = [0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,4,4,4,5]
 
+cube_direction_vectors = [(+1, 0, -1), (+1, -1, 0), (0, -1, +1), (-1, 0, +1), (-1, +1, 0), (0, +1, -1)]
 
 class HexGrid():
     def __init__(self):
@@ -37,9 +38,20 @@ class HexGrid():
             self.setGrid(p, Tile((posX + center[0], posY + center[1]), 6, 0, str(i)))
             i += 1
 
-    def addRoad(self, tile1:int, tile2:int, color:int):
+    def buildRoad(self, tile1:int, tile2:int, color:int):
+        ns = getMutualNeighbors(position[tile1], position[tile2])
+        ts = [position.index(n) for n in ns]
+        rs = [frozenset({tile1, t}) for t in ts] + [frozenset({tile2, t}) for t in ts]
+        for r in rs:
+            if (self.roads.__contains__(r) and self.roads[r].getColor() == color):
+                return self.addRoad(tile1, tile2, color)
+        return False
+
+    def addRoad(self, tile1:int, tile2:int, color:int) -> bool:
         if (not checkNeighbor(position[tile1], position[tile2])):
-            return
+            return False
+        if (frozenset({tile1,tile2}) in self.roads):
+            return False
         pos1 = self.getGrid(position[tile1]).getPosition()
         pos2 = self.getGrid(position[tile2]).getPosition()
         if (pos1[1] - pos2[1] == 0):
@@ -48,6 +60,7 @@ class HexGrid():
             angle = np.round(np.rad2deg(np.tan((pos1[0] - pos2[0])/(pos1[1] - pos2[1]))) / 30)  * 30 + 90
         roadPos = ((pos1[0] + pos2[0]) / 2, (pos1[1] + pos2[1]) / 2)
         self.roads[frozenset({tile1, tile2})] = Road(roadPos, int(angle), color)
+        return True
 
     def buildTown(self, tile1:int, tile2:int, tile3:int, color:int) -> bool:
         if (not self.townOnRoad({tile1,tile2,tile3}, color)):
@@ -93,6 +106,7 @@ class HexGrid():
         for key in self.towns:
             self.towns[key].render(screen)
 
+
     def harvestRecources(self, number:int) -> list[list[int]]:
         if (number == 7 or number < 2 or number > 12):
             return None
@@ -119,6 +133,16 @@ def checkNeighbor(pos1:tuple, pos2:tuple) -> bool:
     s1 = -(pos1[0] + pos1[1])
     s2 = -(pos2[0] + pos2[1])
     return {pos1[0] - pos2[0], pos1[1] - pos2[1], s1 - s2} == {0,1,-1}
+
+def getMutualNeighbors(pos1:tuple, pos2:tuple) -> list[tuple]:
+    if (not checkNeighbor(pos1, pos2)):
+        return None
+    n1 = getNeighbors(pos1)
+    n2 = getNeighbors(pos2)
+    return [p for p in n1 if n2.__contains__(p)]
+
+def getNeighbors(pos:tuple) -> list[tuple]:
+    return [(pos[0] + p[0], pos[1]+p[1]) for p in cube_direction_vectors]
 
 def checkCorner(pos1:tuple, pos2:tuple, pos3:tuple) -> bool:
     s1 = -(pos1[0] + pos1[1])

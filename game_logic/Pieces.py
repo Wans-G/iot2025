@@ -46,7 +46,11 @@ class Road():
         self.sprite = pygame.transform.rotate(self.sprite, angle)
         self.position = pos
         self.angle = angle
+        self.color = color
         self.centered = (pos[0] - self.sprite.get_width()/2, pos[1] - self.sprite.get_height()/2)
+
+    def getColor(self) -> int:
+        return self.color
 
     def render(self, screen:pygame.Surface):
         screen.blit(self.sprite, self.centered)
