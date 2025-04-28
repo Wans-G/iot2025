@@ -39,9 +39,7 @@ class HexGrid():
             i += 1
 
     def buildRoad(self, tile1:int, tile2:int, color:int):
-        ns = getMutualNeighbors(position[tile1], position[tile2])
-        ts = [position.index(n) for n in ns]
-        rs = [frozenset({tile1, t}) for t in ts] + [frozenset({tile2, t}) for t in ts]
+        rs = self.connectedRoads(tile1, tile2, color)
         for r in rs:
             if (self.roads.__contains__(r) and self.roads[r].getColor() == color):
                 return self.addRoad(tile1, tile2, color)
@@ -61,6 +59,19 @@ class HexGrid():
         roadPos = ((pos1[0] + pos2[0]) / 2, (pos1[1] + pos2[1]) / 2)
         self.roads[frozenset({tile1, tile2})] = Road(roadPos, int(angle), color)
         return True
+
+    def connectedRoads(self, tile1:int, tile2:int, color:int) -> list[int]:
+        ns = getMutualNeighbors(position[tile1], position[tile2])
+        for n in ns:
+            town = self.towns[frozenset({tile1, tile2, position.index(n)})]
+            if (town != None and not town.getColor() == color):
+                ns.remove(n)
+        ts = [position.index(n) for n in ns]
+        return [frozenset({tile1, t}) for t in ts] + [frozenset({tile2, t}) for t in ts]
+
+    def longestRoad(self, road:frozenset, color:int):
+
+        pass
 
     def buildTown(self, tile1:int, tile2:int, tile3:int, color:int) -> bool:
         if (not self.townOnRoad({tile1,tile2,tile3}, color)):

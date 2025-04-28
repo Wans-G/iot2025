@@ -70,8 +70,8 @@ def main():
                     else:
                         game.nextTurn()
                 if event.key == pygame.K_b:
-                    print(game.placeRoad(17,34,0))
-                    print(game.placeRoad(17,35,0))
+                    print(game.placeRoad(6,18,0))
+                    print(game.placeRoad(6,7,0))
         
 
 
