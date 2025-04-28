@@ -70,7 +70,7 @@ class HexGrid():
         return [frozenset({tile1, t}) for t in ts] + [frozenset({tile2, t}) for t in ts]
 
     def longestRoad(self, road:frozenset, color:int):
-
+        
         pass
 
     def buildTown(self, tile1:int, tile2:int, tile3:int, color:int) -> bool:
@@ -128,7 +128,7 @@ class HexGrid():
         for t in tiles:
             towns = [p for p in self.towns.keys() if int(t.getNumber()) in p]
             for p in towns:
-                out[self.towns[p].getColor()][t.getRecource()] += 1
+                out[self.towns[p].getColor()][t.getRecource()] += (2 if self.towns[p].isCity() else 1)
 
         return out
 

@@ -58,10 +58,17 @@ class Road():
 class Town():
     def __init__(self, pos:tuple, color:int):
         self.sprite = pygame.image.load(town_image[color]).convert_alpha()
+        self.city = False
         self.position = pos
         self.color = color
         self.centered = (pos[0] - self.sprite.get_width()/2, pos[1] - self.sprite.get_height()/2)
     
+    def upgrade(self):
+        self.city = True
+
+    def isCity(self) -> bool:
+        return self.city
+
     def getColor(self) -> int:
         return self.color
 

@@ -14,6 +14,9 @@ recource = {"Wood": 0, "Sheep": 1, "Wheat": 2, "Brick": 3, "Ore": 4, "Desert": 5
 color = {"Red": 0, "Orange": 1, "White": 2, "Blue": 3}
 playerColor = ["red", "orange", "white", "blue"]
 
+devCard = ["knight", "point", "road", "plenty", "monopoly"]
+deckSetup = [14,5,2,2,2]
+
 def main():
     pygame.init()
     pygame.font.init()
@@ -33,31 +36,23 @@ def main():
 
     game.placeTown(0, 1, 2, color["Red"])
     game.placeRoad(2, 1, color["Red"])
-    game.placeRoad(2, 9, color["Red"])
     game.placeTown(5, 6, 17, color["Red"])
     game.placeRoad(17, 6, color["Red"])
-    game.placeRoad(17, 18, color["Red"])
 
     game.placeTown(15, 16, 5, color["Blue"])
-    game.placeRoad(4, 5, color["Blue"])
     game.placeRoad(15, 5, color["Blue"])
     game.placeTown(3, 4, 13, color["Blue"])
     game.placeRoad(13, 4, color["Blue"])
-    game.placeRoad(4, 14, color["Blue"])
 
     game.placeTown(3, 12, 11, color["Orange"])
     game.placeRoad(12, 11, color["Orange"])
-    game.placeRoad(12, 26, color["Orange"])
     game.placeTown(1, 7, 8, color["Orange"])
     game.placeRoad(7, 8, color["Orange"])
-    game.placeRoad(20, 8, color["Orange"])
 
     game.placeTown(6, 7, 18, color["White"])
     game.placeRoad(18, 7, color["White"])
-    game.placeRoad(18, 19, color["White"])
     game.placeTown(2, 11, 10, color["White"])
     game.placeRoad(11, 10, color["White"])
-    game.placeRoad(25, 10, color["White"])
 
     while (running):
         for event in pygame.event.get():
@@ -72,7 +67,8 @@ def main():
                 if event.key == pygame.K_b:
                     print(game.placeRoad(6,18,0))
                     print(game.placeRoad(6,7,0))
-        
+                if event.key == pygame.K_c:
+                    print(game.buyDevCard(game.getTurn()))
 
 
         # render
@@ -121,12 +117,20 @@ class Game():
         self.players = [Player(0), Player(1), Player(2), Player(3)]
         self.font = pygame.font.SysFont("Ariel", 40)
         self.lastRoll = 0
+        self.deck = None
+
+    def getTurn(self) -> int:
+        return self.currentTurn
 
     def startGame(self):
         self.setup = False
         self.nextTurn()
         self.currentTurn = 0
-
+        self.deck = []
+        for i in range(5):
+            self.deck += [i] *  deckSetup[i] 
+        random.shuffle(self.deck)
+                     
     def placeRoad(self, tile1:int, tile2:int, player:int) -> bool:
         if (self.setup):
             self.gameGrid.addRoad(tile1, tile2, player)
@@ -156,6 +160,17 @@ class Game():
             return True
         return False
     
+    def buyDevCard(self, player:int) -> bool:
+        if (self.setup):
+            return False
+        if (player != self.currentTurn):
+            return False
+        if (len(self.deck) > 0 and self.players[self.currentTurn].payCards([0,1,1,0,1])):
+            card = self.deck.pop()
+            self.players[self.currentTurn].addDevCard(card)
+            return True
+        return False
+    
     def trade(self, give:list[int], recieve:list[int], player:int):
         if (self.setup or player != self.currentTurn):
             return False
@@ -179,7 +194,10 @@ class Game():
         number = roll()
         print(number)
         self.lastRoll = number
-        self.distribute(number)
+        if (number == 7):
+            pass
+        else:
+            self.distribute(number)
 
     def distribute(self, num: int):
         cards = self.gameGrid.harvestRecources(num)
@@ -196,6 +214,7 @@ class Player():
         self.hand:list[int] = [0,0,0,0,0]
         self.cardCount:int = 0
         self.playerNumber:int = num
+        self.hand = [0,0,0,0,0]
 
     def addCards(self, cards:list[int]):
         for i in range(5):
@@ -207,6 +226,9 @@ class Player():
             if (self.hand[i] < cardCost[i]):
                 return False
         return True
+    
+    def addDevCard(self, card:int):
+        self.hand[card] += 1
 
     def payCards(self, cardCost:list[int]) -> bool:
         if (not self.hasCards(cardCost)):
