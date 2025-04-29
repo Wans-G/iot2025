@@ -16,3 +16,30 @@ def capture():
 
 
     picam2.close()
+
+def preparePhoto():
+    path = "/usr/project/board.jpg"
+    
+    fin = open(path, 'rb')
+
+    key = 23
+
+    image = fin.read()
+    fin.close()
+
+    image = bytearray(image)
+
+    for index, value in enumerate(image):
+        image[index] = value ^ key
+    
+    fin = open(path, 'wb')
+
+    fin.write(image)
+    fin.close()
+    
+
+
+
+capture()
+preparePhoto()
+
