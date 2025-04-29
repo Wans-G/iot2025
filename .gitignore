@@ -1,5 +1,15 @@
-game_logic/__pycache__/Grid.cpython-311.pyc
-game_logic/__pycache__/Pieces.cpython-311.pyc
+# Environment variables
+.env
+
+# Python virtual environment
+.venv/
+venv/
+
+# Other common Python ignores (optional but good practice)
+__pycache__/
+*.py[cod]
+*$py.class
+
 game_logic/split_img/roads/*
 game_logic/split_img/towns/*
 game_logic/split_img/tiles/*
