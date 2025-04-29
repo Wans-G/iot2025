@@ -130,7 +130,7 @@ class Game():
         for i in range(5):
             self.deck += [i] *  deckSetup[i] 
         random.shuffle(self.deck)
-                     
+    
     def placeRoad(self, tile1:int, tile2:int, player:int) -> bool:
         if (self.setup):
             self.gameGrid.addRoad(tile1, tile2, player)
