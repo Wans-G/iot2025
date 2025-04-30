@@ -11,7 +11,7 @@ from openai import OpenAI
 # API Key is expected to be in an environment variable named OPENAI_API_KEY
 API_KEY = os.environ.get("OPENAI_API_KEY")
 # Specify the path to the single tile image you want to analyze
-IMAGE_PATH = "game_logic/0_tile.jpg"
+IMAGE_PATH = "game_logic/split_img/2_tile.jpg"
 
 # --- Initialize OpenAI Client ---
 if not API_KEY:
@@ -43,6 +43,7 @@ def analyze_tile_background(image_path):
 
     base64_image = encode_image(image_path)
     if not base64_image:
+        print("Image not found")
         return None
 
     prompt = (
@@ -89,6 +90,7 @@ def analyze_single_tile(image_path):
 
     base64_image = encode_image(image_path)
     if not base64_image:
+        print("Image not found")
         return None
 
     prompt = (
