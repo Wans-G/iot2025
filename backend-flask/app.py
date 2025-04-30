@@ -1,11 +1,13 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 from Game_Logic import Game
 
 
-id = -1
+player_id = 0
 
 
 app = Flask(__name__)
+CORS(app)
 
 current = Game()
 
@@ -16,8 +18,10 @@ def index():
 
 @app.route('/join-game')
 def joining():
-    id+=1
-    return jsonify(id=id)
+    global player_id
+    current_id = player_id
+    player_id+=1
+    return jsonify(id=current_id)
 
 @app.route('/build-road')
 def road():
@@ -52,4 +56,4 @@ def admin():
 
 
 if(__name__ == '__main__'):
-    app.run(host='0.0.0.0',debug=True)
+    app.run(debug=True)

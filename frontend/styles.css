@@ -1,0 +1,37 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #fafafa;
+  }
+  .section {
+    margin-bottom: 20px;
+  }
+  .resources-grid {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .resource {
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 4px;
+    min-width: 80px;
+    text-align: center;
+  }
+  .action-buttons button,
+  .dev-cards .dev-card,
+  #trade-4-1 {
+    margin: 5px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .dev-card {
+    background: #e0e0ff;
+  }
+  .action-buttons button:hover,
+  .dev-cards .dev-card:hover,
+  #trade-4-1:hover {
+    opacity: 0.9;
+  }
