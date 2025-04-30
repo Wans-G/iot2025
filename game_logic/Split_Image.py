@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 tileSize = 52 # vertical tile height / 2
-tile_path = "game_logic/split_img/tiles"# output path
+tile_path = "game_logic/split_img"# output path
 padding = 20
 
 land = [(0,0),(1,0),(0,1),(-1,1),(-1,0),(0,-1),(1,-1),(2,-1),(2,0),(1,1),(0,2),(-1,2),(-2,2),(-2,1),(-2,0),(-1,-1),(0,-2),(1,-2),(2,-2)]
@@ -12,7 +12,7 @@ position = land# + ocean
 
 tile_pos = [(0,0)] * len(position)
 
-def split(input:str = "test_images/new_test1.jpg"):
+def split(input:str, output:str):
     im = PIL.Image.open(input)
 
     # Create tile position array
@@ -26,7 +26,7 @@ def split(input:str = "test_images/new_test1.jpg"):
     for i in range(len(tile_pos)):
         box = centered_box(tile_pos[i], im.size, (tileSize+padding)*2)
         tile = im.crop(box)
-        out = os.path.join(tile_path, f'{i}_tile.jpg')
+        out = os.path.join(output, f'{i}_tile.jpg')
         tile.save(out)
 
 def centered_box(pos:tuple, img_size:tuple, box_size:int) -> tuple:
