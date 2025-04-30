@@ -3,6 +3,7 @@ import numpy as np
 import random
 import scan
 import Split_Image
+import json
 
 playerColor = ["red", "orange", "white", "blue"]
 COLOR = {"red": 0, "orange": 1, "white": 2, "blue": 3}
@@ -22,7 +23,7 @@ class Game():
         self.lastRoll = 0
         self.board  = {2:[],3:[],4:[],5:[],6:[],8:[],9:[],10:[],11:[],12:[]}
         self.tiles = [0] * 19
-        self.robber
+        #self.robber = 0
         self.deck = None
 
     def getTurn(self) -> int:
@@ -41,11 +42,14 @@ class Game():
 
         ## Get board setup ##
         # get image
-        Split_Image.split(input="game_logic/test_pic_x.jpg", output=SPLIT_PATH)
+        Split_Image.split(input="game_logic/test_pic_0.jpg", output=SPLIT_PATH)
         for i in range(19):
-            result = scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg")
+            result = json.loads(scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg"))
             self.board[result["number"]].append(i)
             self.tiles[i] = RESOURCE[result["resource"]]
+
+        print(self.board)
+        print(self.tiles)
 
         self.nextTurn()
         self.currentTurn = 0
@@ -124,10 +128,10 @@ class Game():
 
     def distribute(self, num: int):
         ## get image ##
-        Split_Image.split(input="game_logic/test_pic_x.jpg", output=SPLIT_PATH)
+        Split_Image.split(input="game_logic/test_pic_0.jpg", output=SPLIT_PATH)
 
         for i in self.board[num]:
-            result = scan.analyze_single_tile(f"{SPLIT_PATH}/{i}_tile.jpg")
+            result = json.loads(scan.analyze_single_tile(f"{SPLIT_PATH}/{i}_tile.jpg"))
             res = self.tiles[i]
             for t in result["vertices"]:
                 p = COLOR[t[1]]
@@ -244,3 +248,8 @@ class Player():
                           devCard[3]: self.devCards[3],
                           devCard[4]: self.devCards[4]}
                 }
+
+
+if (__name__ == "__main__"):
+    game = Game()
+    game.startGame()
