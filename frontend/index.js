@@ -4,13 +4,13 @@ playerId = null;
 
 document.addEventListener('DOMContentLoaded', () => {
     joinGame();
-    getGameInfo();
+    //getGameInfo();
 });
 
-document.addEventListener('click', devCard());
-document.addEventListener('click', buildRoad());
-document.addEventListener('click', buildSettlement());
-document.addEventListener('click', buildCity());
+document.getElementById('buy-dev-card').addEventListener('click', devCard);
+document.getElementById('build-road').addEventListener('click', buildRoad);
+document.getElementById('build-settlement').addEventListener('click', buildSettlement);
+document.getElementById('build-city').addEventListener('click', buildCity);
 
 
 async function joinGame() {
