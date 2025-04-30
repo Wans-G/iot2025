@@ -11,8 +11,6 @@ ocean = [(3,-2),(3,-1),(3,0),(2,1),(1,2),(0,3),(-1,3),(-2,3),(-3,3),(-3,2),(-3,1
 position = land# + ocean
 
 tile_pos = [(0,0)] * len(position)
-town_pos:dict[frozenset:tuple] = {}
-road_pos:dict[frozenset:tuple] = {}
 
 def split(input:str = "test_images/new_test1.jpg"):
     im = PIL.Image.open(input)

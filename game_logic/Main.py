@@ -123,13 +123,18 @@ class Game():
         return self.currentTurn
 
     def startGame(self):
+        if (self.setup == False):
+            return
         self.setup = False
-        self.nextTurn()
-        self.currentTurn = 0
         self.deck = []
         for i in range(5):
             self.deck += [i] *  deckSetup[i] 
         random.shuffle(self.deck)
+
+        ## Get board setup ##
+
+        self.nextTurn()
+        self.currentTurn = 0
     
     def placeRoad(self, tile1:int, tile2:int, player:int) -> bool:
         if (self.setup):
