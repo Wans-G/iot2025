@@ -48,7 +48,7 @@ def analyze_tile_background(image_path):
     prompt = (
         "Analyze the provided image, which shows a single Catan game tile.\n"
         "Focus ONLY on the central hexagonal tile itself.\n"
-        "1. Identify the number token printed on the tile. If obscured by the robber, return 0.\n"
+        "1. Identify the number token printed on the tile. If obscured by the robber or it is desert with no number at all, return 0.\n"
         "2. Identify the visual terrain type (Forest, Pasture, Field, Hill, Mountain, Desert).\n"
         "3. Map terrain to resource (Wood, Sheep, Wheat, Brick, Ore, None).\n"
         "Return ONLY a JSON array with one object: {\"number\": int, \"type\": string, \"resource\": string}."
@@ -94,7 +94,7 @@ def analyze_single_tile(image_path):
     prompt = (
         "Analyze the provided image, which shows a single Catan game tile and potentially pieces on the vertices around it.\n"
         "1. Identify settlements (type=1) and cities (type=2) on surrounding vertices with their colors.\n"
-        "2. Determine if the robber is on the number token.\n"
+        "2. Check whether the number token on the hexagonal tile is visible. If a silver circular token (robber) is placed in the center of the tile and the number is not visible, return true. Otherwise, if no silver circular token (robber) is placed in the center of the tile, return false.\n"
         "Return ONLY a JSON object with keys 'vertices' and 'robber'."
     )
 
