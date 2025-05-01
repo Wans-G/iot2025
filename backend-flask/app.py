@@ -3,19 +3,21 @@ import requests
 from flask_cors import CORS
 from pathlib import Path
 import importlib.util
+import time
+from Game_Logic import Game
 
 #Getting the files from the other library
 current_dir = Path(__file__).resolve().parent
 project_dir = current_dir.parent
 game_logic_folder = project_dir / 'game_logic'
+game_logic_file = game_logic_folder / 'Game_Logic.py'
 
-game_logic_mod  = importlib.util.spec_from_file_location("Game_Logic.py", game_logic_folder + "/Game_Logic.py")
-game_logic = importlib.util.module_from_spec(game_logic_mod)
-game_logic_mod.loader.exec_module(game_logic)
 
+'''
 decrypt_mod = importlib.util.spec_from_file_location("decrypt.py", project_dir + "/decrypt.py")
 decrypt = importlib.util.module_from_spec(decrypt_mod)
 decrypt_mod.loader.exec_module(decrypt)
+'''
 
 player_id = 0
 
@@ -23,7 +25,7 @@ player_id = 0
 app = Flask(__name__)
 CORS(app)
 
-current = game_logic.Game()
+current = Game()
 
 #main
 @app.route('/')
@@ -73,14 +75,13 @@ def dev_card(id):
 
 @app.route('/end-turn/<int:id>')
 def end_turn(id):
-    global current
-    if(current.getTurn() != id):
-        return jsonify(action=False)
-    attempt = current.nextTurn()
-    #call to pi here
-    image = camera()
-    #insert call to openai here
-    return jsonify(action=attempt)
+    
+    #global current
+    #if(current.getTurn() != id):
+        #return jsonify(action=False)
+    camera()
+    #attempt = current.nextTurn()
+    #return jsonify(action=attempt)
     
 
 @app.route('/game-info')
@@ -94,12 +95,14 @@ def admin():
 
 
 def camera():
-    pass
-'''
-    image_enc = requests.get().content
-    image = decrypt.decrypt(image_enc)
-    return image
-'''
+    r = requests.post('http://172.23.23.61:5000/take-photo')
+    time.sleep(7)
+    r2 = requests.get('http://172.23.23.61:5000/get-photo')
+    image = r2.content
+    global game_logic_folder
+    file = open(game_logic_folder + "/board.jpg", 'wb')
+    file.write(image)
+    file.close()
 
 if(__name__ == '__main__'):
     app.run(debug=True)

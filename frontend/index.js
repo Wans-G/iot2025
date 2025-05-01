@@ -5,13 +5,20 @@ playerId = null;
 document.addEventListener('DOMContentLoaded', () => {
     joinGame();
     //getGameInfo();
-});
+    document.getElementById('buy-dev-card').addEventListener('click', devCard());
+    document.getElementById('build-road').addEventListener('click', buildRoad());
+    document.getElementById('build-settlement').addEventListener('click', buildSettlement());
+    document.getElementById('build-city').addEventListener('click', buildCity());
+    document.getElementById('end-turn').addEventListener('click', endTurn());
 
+});
+/*
 document.getElementById('buy-dev-card').addEventListener('click', devCard);
 document.getElementById('build-road').addEventListener('click', buildRoad);
 document.getElementById('build-settlement').addEventListener('click', buildSettlement);
 document.getElementById('build-city').addEventListener('click', buildCity);
-
+document.getElementById('end-turn').addEventListener('click', endTurn);
+*/
 
 async function joinGame() {
     try {
@@ -86,6 +93,7 @@ async function devCard(){
 
 async function endTurn(){
     try{
+        console.log("Ending Turn");
         const response = await fetch(`${server}/end-turn/${playerId}`);
         
         await updateResources();
