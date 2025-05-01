@@ -1,53 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
     <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catan Player Interface</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Welcome</title>
+    <script defer src="index.js"></script>
     </head>
     <body>
-    <div id="dice-roll" class="section">
-        <h2>Dice Roll Outcome</h2>
-        <p id="dice-result">--</p>
-    </div>
-
-    <div id="players" class="section">
-        <h2>Players</h2>
-        <ul id="player-list"></ul>
-    </div>
-
-    <div id="resources" class="section">
-        <h2>Your Resources</h2>
-        <div class="resources-grid">
-        <div class="resource" data-resource="brick">Brick: <span>0</span></div>
-        <div class="resource" data-resource="lumber">Lumber: <span>0</span></div>
-        <div class="resource" data-resource="ore">Ore: <span>0</span></div>
-        <div class="resource" data-resource="grain">Grain: <span>0</span></div>
-        <div class="resource" data-resource="wool">Wool: <span>0</span></div>
-        </div>
-        <button id="trade-4-1">Trade 4:1</button>
-    </div>
-
-    <div id="actions" class="section">
-        <h2>Actions</h2>
-        <div class="action-buttons">
-        <button id="build-road">Build Road</button>
-        <button id="build-settlement">Build Settlement</button>
-        <button id="build-city">Build City</button>
-        <button id="buy-dev-card">Buy Development Card</button>
-        </div>
-        
-
-        <h3>Development Cards</h3>
-        <div class="dev-cards">
-        <button class="dev-card" id="dev-knight">Knight</button>
-        <button class="dev-card" id="dev-road-building">Road Building</button>
-        <button class="dev-card" id="dev-monopoly">Monopoly</button>
-        <button class="dev-card" id="dev-year-of-plenty">Year of Plenty</button>
-        </div>
-    </div>
-
-    <script src="index.js"></script>
+    <h1>Welcome to the Game!</h1>
+    <button id="start-btn">Start Game</button>
     </body>
 </html>

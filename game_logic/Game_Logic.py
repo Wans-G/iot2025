@@ -1,6 +1,6 @@
 import random
-import scan
-import Split_Image
+from . import scan
+from . import Split_Image
 import json
 import time
 
