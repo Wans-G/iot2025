@@ -22,9 +22,8 @@ class Game():
         self.currentTurn = 0
         self.players = [Player(0), Player(1), Player(2), Player(3)]
         self.lastRoll = 0
-        self.board  ={0: [], 2: [5], 3: [2, 8], 4: [13, 18], 5: [11, 15], 6: [0, 14], 8: [10, 16], 9: [3, 6], 10: [9, 17], 11: [4, 12], 12: [1]}
-        #{0:[], 2:[],3:[],4:[],5:[],6:[],8:[],9:[],10:[],11:[],12:[]}
-        self.tiles = [4, 2, 0, 1, 0, 4, 1, 0, 4, 1, 3, 2, 0, 3, 1, 2, 3, 2, 0]
+        self.board = {0:[], 2:[],3:[],4:[],5:[],6:[],8:[],9:[],10:[],11:[],12:[]}
+        self.tiles = [0] * 19 #[4, 2, 0, 1, 0, 4, 1, 0, 4, 1, 3, 2, 0, 3, 1, 2, 3, 2, 0]
         #self.robber = 0
         self.deck = None
 
@@ -43,19 +42,21 @@ class Game():
         random.shuffle(self.deck)
 
         ## Get board setup ##
+
         # get image
+
         Split_Image.split(input=INPUT, output=SPLIT_PATH)
-        #for i in range(19):
-        #    openai = None
-       #     while (openai == None):
-        #        openai = scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg")
-      #          time.sleep(1)
-      #      print(openai)
-      #      result = json.loads(openai)
-     #       if (not result["number"] == 0):
-     #           self.board[result["number"]].append(i)
-    #            self.tiles[i] = RESOURCE[result["resource"]]
-     #       time.sleep(1)
+        for i in range(19):
+            openai = None
+            while (openai == None):
+                openai = scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg")
+                time.sleep(1)
+            print(openai)
+            result = json.loads(openai)
+            if (not result["number"] == 0):
+                self.board[result["number"]].append(i)
+                self.tiles[i] = RESOURCE[result["resource"]]
+            time.sleep(1)
             
 
         print(self.board)
@@ -112,13 +113,32 @@ class Game():
         print("Cant Afford")
         return False
     
-    def useDevCard(self, card:int, player:int) -> bool:
+    #   0 - knight, remove a knight card
+    #   1 - point,  cant ues, always false
+    #   2 - road building, remove a card
+    #   3 - year of plenty, needs an args array of two cards to add. ex: [0,1] wood and sheep
+    #   4 - monopoly, needs an args array of 1 of card to take. ex: [4] takes all ore
+    def useDevCard(self, card:int, player:int, args:list = []) -> bool:
         if (self.setup):
             return False
         if (player != self.currentTurn):
             print("Not Players Turn")
             return False
-        return self.players[player].useDevCard(card)
+        if (card == 3 and len(args) < 2):
+            return False 
+        if (card == 4 and len(args) < 1):
+            return False 
+        if (self.players[player].useDevCard(card)):
+            if (card == 3): # year of plenty
+                self.players[player].addResourse(args[0], 1)
+                self.players[player].addResourse(args[1], 1)
+            if (card == 4): # monopoly
+                sum = 0
+                for p in self.players:
+                    sum += p.loseCard(args[0])
+                self.players[player].addResourse(args[0], sum)
+            return True
+        return False
 
 
     def trade(self, give:list[int], recieve:list[int], player:int):
@@ -138,6 +158,7 @@ class Game():
 
     def distribute(self, num: int):
         ## get image ##
+
         Split_Image.split(input=INPUT, output=SPLIT_PATH)
 
         for i in self.board[num]:
@@ -228,6 +249,12 @@ class Player():
             self.hand[i] -= cardCost[i]
             self.cardCount -= cardCost[i]
         return True
+
+    def loseCard(self, card:int) -> int:
+        # Lose all of a card, return count, used for monopoly
+        temp = self.hand[card]
+        self.hand[card] = 0
+        return temp
 
     def getHand(self) -> list[int]:
         return self.hand
