@@ -1,16 +1,18 @@
 from flask import Flask, jsonify
 import requests
 from flask_cors import CORS
+#from flask_socketio import SocketIO, emit
 from pathlib import Path
 import importlib.util
 import time
 from Game_Logic import Game
 
-#Getting the files from the other library
+#Setting up location for image of board
 current_dir = Path(__file__).resolve().parent
 project_dir = current_dir.parent
 game_logic_folder = project_dir / 'game_logic'
 game_logic_file = game_logic_folder / 'Game_Logic.py'
+photo_file = game_logic_folder / 'board.jpg'
 
 
 '''
@@ -24,6 +26,9 @@ player_id = 0
 
 app = Flask(__name__)
 CORS(app)
+#socketsio = SocketIO(app, cors_allowed_origins='*')
+
+session_user_map={}
 
 current = Game()
 
@@ -37,14 +42,13 @@ def joining():
     global player_id
     current_id = player_id
     player_id+=1
+    if(player_id == 4):
+        current.startGame()
     return jsonify(id=current_id)
 
 @app.route('/build-road/<int:id>')
 def road(id):
     global current
-    if(current.getTurn() != id):
-        attempt = False
-        return jsonify(action=attempt)
     attempt = current.buildRoad(id)
     return jsonify(action=attempt)
 
@@ -52,37 +56,47 @@ def road(id):
 @app.route('/build-house/<int:id>')
 def house(id):
     global current
-    if(current.getTurn() != id ):
-        return jsonify(action=False)
     attempt = current.placeTown(id)
     return jsonify(action=attempt)
 
 @app.route('/build-city/<int:id>')
 def city(id):
     global current
-    if(current.getTurn() != id):
-        return jsonify(action=False)
     attempt=current.upgradeCity(id)
     return jsonify(action=attempt)
 
 @app.route('/buy-dev-card/<int:id>')
 def dev_card(id):
     global current
-    if(current.getTurn() != id ):
-        return jsonify(action=False)
     attempt = current.buyDevCard(id)
     return jsonify(action=attempt)
 
 @app.route('/end-turn/<int:id>')
 def end_turn(id):
-    
-    #global current
-    #if(current.getTurn() != id):
-        #return jsonify(action=False)
+    print("starting to end")
+    global current
+    if(current.getTurn() != id):
+        return jsonify(action=False)
     camera()
-    #attempt = current.nextTurn()
-    #return jsonify(action=attempt)
+    current.nextTurn()
+    roll=current.gameInfo()
+    #socketsio.emit('resource-update')
+    return jsonify(dice=roll["Roll"], player=roll[""])
+
+@app.route('/update-resources')
+def update_r():
+    global current
+    info = current.playerInfo()
+    return info['Hand']
+
     
+@app.route('/update/<int:id>')
+def update_all(id):
+    global current
+    player_info = current.playerInfo(id)
+    game_info = current.gameInfo()
+    return jsonify(player=player_info, game=game_info)
+
 
 @app.route('/game-info')
 def get_game_info():
@@ -95,14 +109,18 @@ def admin():
 
 
 def camera():
+    print("starting to shoot a photo")
     r = requests.post('http://172.23.23.61:5000/take-photo')
     time.sleep(7)
+    print('took photo')
     r2 = requests.get('http://172.23.23.61:5000/get-photo')
-    image = r2.content
+    image = bytearray(r2.content)
     global game_logic_folder
-    file = open(game_logic_folder + "/board.jpg", 'wb')
+    global photo_file
+    file = open(photo_file, 'wb')
     file.write(image)
     file.close()
 
 if(__name__ == '__main__'):
-    app.run(debug=True)
+    #socketsio.run(app, port=5000,debug=True)
+    app.run(port=8000, debug=True)

@@ -1,24 +1,31 @@
-server = 'http://127.0.0.1:5000';
-
+server = 'http://127.0.0.1:8000';
 playerId = null;
+
+
+
+//const socket = io(`${server}`);
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     joinGame();
     //getGameInfo();
-    document.getElementById('buy-dev-card').addEventListener('click', devCard());
-    document.getElementById('build-road').addEventListener('click', buildRoad());
-    document.getElementById('build-settlement').addEventListener('click', buildSettlement());
-    document.getElementById('build-city').addEventListener('click', buildCity());
-    document.getElementById('end-turn').addEventListener('click', endTurn());
+    document.getElementById('buy-dev-card').addEventListener('click', devCard);
+    document.getElementById('build-road').addEventListener('click', buildRoad);
+    document.getElementById('build-settlement').addEventListener('click', buildSettlement);
+    document.getElementById('build-city').addEventListener('click', buildCity);
+    
 
 });
+    document.getElementById('end-turn').addEventListener('click', endTurn);
+    document.getElementById('update').addEventListener('click', update);
+
 /*
-document.getElementById('buy-dev-card').addEventListener('click', devCard);
-document.getElementById('build-road').addEventListener('click', buildRoad);
-document.getElementById('build-settlement').addEventListener('click', buildSettlement);
-document.getElementById('build-city').addEventListener('click', buildCity);
-document.getElementById('end-turn').addEventListener('click', endTurn);
-*/
+socket.on('resource-update', async function(data){
+    if(data.id === playerId){
+        await updateResources();
+    }
+})*/
 
 async function joinGame() {
     try {
@@ -95,7 +102,7 @@ async function endTurn(){
     try{
         console.log("Ending Turn");
         const response = await fetch(`${server}/end-turn/${playerId}`);
-        
+        document.getElementById('dice-result').textContent = response['dice'];
         await updateResources();
 
 
@@ -104,7 +111,28 @@ async function endTurn(){
     }
 }
 
+async function update(){
+    try{
+        await updateResources();
+        const response = await fetch(`${server}/update/${playerId}`);
+        document.getElementById('dice-result').textContent = response['game']['Roll'];
+    }catch(error){
+        console.error(error);
+    }
+}
+
 async function updateResources(){
-    console.log("updated resources");
+    try{
+        console.log('updating resources');
+        const response = await fetch(`${server}/update`);
+        document.getElementById("brick_amount")=response.data["Brick"];
+        document.getElementById("lumber_amount")=response.data["Wood"];
+        document.getElementById("ore_amount")=response.data["Ore"];
+        document.getElementById("grain_amount")=response.data["Wheat"];
+        document.getElementById("wool_amount")=response.data["Sheep"];
+        document.getElementById("wool_amount").textContent=5;
+    }catch(error){
+        console.error('Failed to update resources');
+    }
 }
 

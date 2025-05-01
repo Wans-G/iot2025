@@ -17,3 +17,16 @@ image = bytearray(r2.content)
 file = open(photo_file, 'wb')
 file.write(image)
 file.close()
+'''
+print("starting to shoot a photo")
+r = requests.post('http://192.168.0.177:5000/take-photo')
+time.sleep(7)
+print('took photo')
+r2 = requests.get('http://192.168.0.177:5000/get-photo')
+image = bytearray(r2.content)
+#game_logic_folder
+#photo_file
+file = open(photo_file, 'wb')
+file.write(image)
+file.close()
+'''
