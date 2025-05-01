@@ -5,7 +5,7 @@ from flask_cors import CORS
 from pathlib import Path
 import importlib.util
 import time
-from Game_Logic import Game
+from game_logic.Game_Logic import Game
 
 #Setting up location for image of board
 current_dir = Path(__file__).resolve().parent
