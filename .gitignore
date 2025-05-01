@@ -10,6 +10,4 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-game_logic/split_img/roads/*
-game_logic/split_img/towns/*
-game_logic/split_img/tiles/*
+game_logic/split_img/*
