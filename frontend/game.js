@@ -1,8 +1,9 @@
 server = 'http://127.0.0.1:8000';
 const playerId = localStorage.getItem('playerId');
+socket = io('http://localhost:8000');
 
 document.addEventListener('DOMContentLoaded', () => {
-    const socket = io('http://localhost:8000');
+    
     // Display Player ID
     const playerInfoElement = document.getElementById('player-identity');
     if (playerId !== null) {

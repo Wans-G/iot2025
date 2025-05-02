@@ -27,11 +27,15 @@ decrypt_mod = importlib.util.spec_from_file_location("decrypt.py", project_dir +
 decrypt = importlib.util.module_from_spec(decrypt_mod)
 decrypt_mod.loader.exec_module(decrypt)
 '''
-socketio=SocketIO()
-app = Flask(__name__)
-CORS(app)
-app = socketio.init(app, cors_allowed_origins='*')
 
+app = Flask(__name__)
+socketio = SocketIO()
+#app.config['SERVER_NAME'] = 'backend'
+
+
+socketio.init_app(app=app, cors_allowed_origins='*')
+
+CORS(app)
 
 player_id=0
 session_user_map={}
@@ -41,7 +45,7 @@ current = Game()
 #main
 @app.route('/')
 def index():
-    return ("Hi")
+    return('Hi')
 
 @app.route('/join-game')
 def joining():
@@ -51,6 +55,7 @@ def joining():
     if (player_id == 4):
         # Temp: skip camera
         #camera()
+        socketio.emit('update-resources')
         current.startGame()
 
     return jsonify(id=current_id)
@@ -115,7 +120,7 @@ def use_dev_card(card, player_id):
     args = requests.args.get('args')
     args = list(map(int, args.split(','))) if args else []
     success = current.useDevCard(card, player_id, args)
-    socketio.emit('update-resources', broadcast=True)
+    SocketIO.emit('update-resources')
     return jsonify({"success": success})
 
 @app.route('/end-turn/<int:id>')
@@ -127,7 +132,7 @@ def end_turn(id):
     camera()
     current.nextTurn()
     roll=current.gameInfo()
-    socketio.emit('ended-turn', broadcast=True)
+    SocketIO.emit('ended-turn')
     return jsonify(dice=roll["Roll"], player=roll["Current Player"])
 
 @app.route('/update-resources/<int:playerNumber>')
@@ -164,4 +169,4 @@ def camera():
     file.close()
 
 if(__name__ == '__main__'):
-    socketio.run(app)
+    socketio.run(app, port=8000)
