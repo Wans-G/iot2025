@@ -9,7 +9,7 @@ document.getElementById('buy-dev-card').addEventListener('click', devCard);
 document.getElementById('build-road').addEventListener('click', buildRoad);
 document.getElementById('build-settlement').addEventListener('click', buildSettlement);
 document.getElementById('build-city').addEventListener('click', buildCity);
-document.getElementsById('end-turn').addEventListener('click', endTurn);
+document.getElementById('end-turn').addEventListener('click', endTurn);
 
 document.querySelectorAll(".dev-card").forEach(btn => {
     btn.addEventListener("click", async () => {
