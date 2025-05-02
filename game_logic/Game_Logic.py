@@ -47,6 +47,7 @@ class Game():
         ## Get board setup ##
 
         # get image
+
         # TEMP: skip ai scan
         # Split_Image.split(input=str(INPUT), output=str(SPLIT_PATH))
         # for i in range(19):
@@ -60,7 +61,7 @@ class Game():
         #         self.board[result["number"]].append(i)
         #         self.tiles[i] = RESOURCE[result["resource"]]
         #     time.sleep(1)
-            
+ 
 
         print(self.board)
         print(self.tiles)

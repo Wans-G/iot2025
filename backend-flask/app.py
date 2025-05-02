@@ -57,11 +57,13 @@ def joining():
 
 @app.route('/game-info')
 def get_game_info():
+    playerColor = ["red", "orange", "white", "blue"]
+
     game_info = {
         "roll": current.lastRoll,
         "players": [
             {
-                "id": player.playerNumber,
+                "color": playerColor[player.playerNumber],
                 "victoryPoints": player.victoryPoints,
                 "hand": {
                     "lumber": player.hand[0],
