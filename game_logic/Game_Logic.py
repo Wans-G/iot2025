@@ -22,8 +22,11 @@ class Game():
         self.currentTurn = 0
         self.players = [Player(0), Player(1), Player(2), Player(3)]
         self.lastRoll = 0
-        self.board = {0:[], 2:[],3:[],4:[],5:[],6:[],8:[],9:[],10:[],11:[],12:[]}
-        self.tiles = [0] * 19 #[4, 2, 0, 1, 0, 4, 1, 0, 4, 1, 3, 2, 0, 3, 1, 2, 3, 2, 0]
+        #self.board = {0:[], 2:[],3:[],4:[],5:[],6:[],8:[],9:[],10:[],11:[],12:[]}
+        # TEMP: skip ai scan
+        self.board = {0: [], 2: [15], 3: [13, 16], 4: [3, 9], 5: [1, 14], 6: [4, 6], 8: [2, 8], 9: [5, 7], 10: [0, 12], 11: [10, 18], 12: [11]}
+        #self.tiles = [0] * 19 #[4, 2, 0, 1, 0, 4, 1, 0, 4, 1, 3, 2, 0, 3, 1, 2, 3, 2, 0]
+        self.tiles = [3, 4, 2, 0, 1, 4, 0, 2, 0, 1, 3, 1, 0, 4, 0, 2, 2, 0, 1]
         #self.robber = 0
         self.deck = None
 
@@ -45,19 +48,20 @@ class Game():
 
         # get image
 
-        Split_Image.split(input=str(INPUT), output=str(SPLIT_PATH))
-        for i in range(19):
-            openai = None
-            delay = 0
-            while (openai == None):
-                openai = scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg")
-                time.sleep(delay)
-                delay = min(delay+1, 5)
-            print(openai)
-            result = json.loads(openai)
-            if (not result["number"] == 0):
-                self.board[result["number"]].append(i)
-                self.tiles[i] = RESOURCE[result["resource"]]
+        # TEMP: skip ai scan
+        # Split_Image.split(input=str(INPUT), output=str(SPLIT_PATH))
+        # for i in range(19):
+        #     openai = None
+        #     while (openai == None):
+        #         openai = scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg")
+        #         time.sleep(1)
+        #     print(openai)
+        #     result = json.loads(openai)
+        #     if (not result["number"] == 0):
+        #         self.board[result["number"]].append(i)
+        #         self.tiles[i] = RESOURCE[result["resource"]]
+        #     time.sleep(1)
+ 
 
         print(self.board)
         print(self.tiles)

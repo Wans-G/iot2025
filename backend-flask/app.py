@@ -49,7 +49,8 @@ def joining():
     current_id = player_id
     player_id+=1
     if (player_id == 4):
-        camera()
+        # Temp: skip camera
+        #camera()
         current.startGame()
 
     return jsonify(id=current_id)
@@ -128,10 +129,10 @@ def end_turn(id):
     #socketsio.emit('resource-update')
     return jsonify(dice=roll["Roll"], player=roll["Current_Player"])
 
-@app.route('/update-resources')
-def update_r():
+@app.route('/update-resources/<int:playerNumber>')
+def update_r(playerNumber):
     global current
-    info = current.playerInfo()
+    info = current.playerInfo(playerNumber)
     return info['Hand']
 
     
