@@ -1,6 +1,14 @@
 server = 'http://127.0.0.1:8000';
 const playerId = localStorage.getItem('playerId');
 
+async function save() {
+    const response = await fetch(`${server}/save`);
+}
+
+async function load() {
+    const response = await fetch(`${server}/load`);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Display Player ID
     const playerInfoElement = document.getElementById('player-identity');
