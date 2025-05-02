@@ -5,11 +5,18 @@ from flask_cors import CORS
 from pathlib import Path
 import importlib.util
 import time
-from game_logic.Game_Logic import Game
+import sys
 
 #Setting up location for image of board
 current_dir = Path(__file__).resolve().parent
 project_dir = current_dir.parent
+
+# Add project root to sys.path BEFORE attempting to import from it
+sys.path.insert(0, str(project_dir))
+
+# Now this import should work
+from game_logic.Game_Logic import Game
+
 game_logic_folder = project_dir / 'game_logic'
 game_logic_file = game_logic_folder / 'Game_Logic.py'
 photo_file = game_logic_folder / 'board.jpg'
@@ -131,11 +138,6 @@ def update_all(id):
     player_info = current.playerInfo(id)
     game_info = current.gameInfo()
     return jsonify(player=player_info, game=game_info)
-
-
-@app.route('/game-info')
-def get_game_info():
-    return ("game-info")
 
 
 @app.route('/admin')
