@@ -6,6 +6,7 @@ from pathlib import Path
 import importlib.util
 import time
 import sys
+from database import gameDatabase
 
 #Setting up location for image of board
 current_dir = Path(__file__).resolve().parent
@@ -14,7 +15,7 @@ project_dir = current_dir.parent
 # Add project root to sys.path BEFORE attempting to import from it
 sys.path.insert(0, str(project_dir))
 
-# Now this import should work
+# Now this import should work````````
 from game_logic.Game_Logic import Game
 
 game_logic_folder = project_dir / 'game_logic'
@@ -37,6 +38,7 @@ CORS(app)
 session_user_map={}
 
 current = Game()
+database = gameDatabase()
 
 #main
 @app.route('/')
@@ -49,8 +51,7 @@ def joining():
     current_id = player_id
     player_id+=1
     if (player_id == 4):
-        # Temp: skip camera
-        #camera()
+        camera()
         current.startGame()
 
     return jsonify(id=current_id)
@@ -63,7 +64,6 @@ def get_game_info():
         "roll": current.lastRoll,
         "players": [
             {
-                "id": player.playerNumber,
                 "color": playerColor[player.playerNumber],
                 "victoryPoints": player.victoryPoints,
                 "hand": {
@@ -130,12 +130,11 @@ def end_turn(id):
     #socketsio.emit('resource-update')
     return jsonify(dice=roll["Roll"], player=roll["Current_Player"])
 
-@app.route('/update-resources/<int:playerNumber>')
-def update_resources(playerNumber):
+@app.route('/update-resources')
+def update_r():
     global current
-    info = current.playerInfo(playerNumber)
-    print(info['Hand'])
-    return jsonify(resources=info['Hand'])
+    info = current.playerInfo()
+    return info['Hand']
 
     
 @app.route('/update/<int:id>')
@@ -150,6 +149,21 @@ def update_all(id):
 def admin():
     return('admin')
 
+@app.route('/save')
+def save():
+    try:
+        database.saveGame("TestGame", current)
+    except:
+        return jsonify({"success": False})
+    return jsonify({"success": True})
+
+@app.route('/load')
+def load():
+    try:
+        database.loadGame("TestGame", current)
+    except:
+        return jsonify({"success": False})
+    return jsonify({"success": True})
 
 def camera():
     print("starting to shoot a photo")
@@ -166,4 +180,4 @@ def camera():
 
 if(__name__ == '__main__'):
     #socketsio.run(app, port=5000,debug=True)
-    app.run(host='127.0.0.1', port=8000, debug=True)
+    app.run(port=8000, debug=True)
