@@ -124,7 +124,7 @@ def end_turn(id):
     current.nextTurn()
     roll=current.gameInfo()
     #socketsio.emit('resource-update')
-    return jsonify(dice=roll["Roll"], player=roll[""])
+    return jsonify(dice=roll["Roll"], player=roll["Current_Player"])
 
 @app.route('/update-resources')
 def update_r():
