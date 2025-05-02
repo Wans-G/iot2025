@@ -12,8 +12,8 @@ RESOURCE = {"Wood":0, "Sheep":1, "Wheat":2, "Brick":3, "Ore":4}
 devCard = ["knight", "point", "road", "plenty", "monopoly"]
 deckSetup = [14,5,2,2,2]
 
-SPLIT_PATH = "game_logic/split_img"
-INPUT = "test_images/new_test1.jpg"
+SPLIT_PATH = "split_img"
+INPUT = "board.jpg"
 
 
 class Game():
@@ -45,7 +45,7 @@ class Game():
 
         # get image
 
-        Split_Image.split(input=INPUT, output=SPLIT_PATH)
+        Split_Image.split(input=str(INPUT), output=str(SPLIT_PATH))
         for i in range(19):
             openai = None
             while (openai == None):
@@ -159,7 +159,7 @@ class Game():
     def distribute(self, num: int):
         ## get image ##
 
-        Split_Image.split(input=INPUT, output=SPLIT_PATH)
+        Split_Image.split(input=str(INPUT), output=str(SPLIT_PATH))
 
         for i in self.board[num]:
             result = None

@@ -19,7 +19,7 @@ from game_logic.Game_Logic import Game
 
 game_logic_folder = project_dir / 'game_logic'
 game_logic_file = game_logic_folder / 'Game_Logic.py'
-photo_file = game_logic_folder / 'board.jpg'
+photo_file = 'board.jpg'
 
 
 '''
@@ -49,6 +49,7 @@ def joining():
     current_id = player_id
     player_id+=1
     if (player_id == 4):
+        camera()
         current.startGame()
 
     return jsonify(id=current_id)

@@ -1,7 +1,35 @@
-server = 'http://127.0.0.1:5000';
+server = 'http://127.0.0.1:8000';
 const playerId = localStorage.getItem('playerId');
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Display Player ID
+    const playerInfoElement = document.getElementById('player-identity');
+    if (playerId !== null) {
+        if (playerInfoElement) {
+            playerInfoElement.textContent = `You are Player ${playerId}`;
+        } else {
+            console.warn("Element with ID 'player-identity' not found.");
+        }
+    } else {
+        if (playerInfoElement) {
+            playerInfoElement.textContent = "Error: Player ID not found. Please join again.";
+        }
+        console.error("Player ID not found in localStorage.");
+        // Optionally redirect back to index.html or show an error message
+        // window.location.href = "index.html"; 
+        return; // Stop further initialization if ID is missing
+    }
+
+    // Add listener for end-turn button (if it wasn't added already)
+    const endTurnButton = document.getElementById('end-turn');
+    if (endTurnButton) {
+        endTurnButton.addEventListener('click', endTurn);
+    } else {
+        // It seems the 'end-turn' button is missing from game.html based on the provided file.
+        // We should add it to game.html or remove this listener logic.
+        console.warn("Element with ID 'end-turn' not found."); 
+    }
+
     getGameInfo();
 });
 
@@ -183,9 +211,24 @@ async function endTurn(){
 }
 
 async function updateResources(){
-    const response = await fetch(`${server}/resource-update`)
-    resources = response['Hand'];
-    updateResourcesDisplay(resources);
+    try {
+        const response = await fetch(`${server}/update-resources`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const resources = await response.json();
+        
+        const adaptedResources = {
+            lumber: resources.Wood !== undefined ? resources.Wood : resources.lumber,
+            wool: resources.Sheep !== undefined ? resources.Sheep : resources.wool,
+            grain: resources.Wheat !== undefined ? resources.Wheat : resources.grain,
+            brick: resources.Brick !== undefined ? resources.Brick : resources.brick,
+            ore: resources.Ore !== undefined ? resources.Ore : resources.ore
+        };
 
+        updateResourcesDisplay(adaptedResources);
+    } catch (error) {
+        console.error("Failed to update resources:", error);
+    }
 }
 
