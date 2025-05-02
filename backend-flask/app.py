@@ -19,7 +19,7 @@ from game_logic.Game_Logic import Game
 
 game_logic_folder = project_dir / 'game_logic'
 game_logic_file = game_logic_folder / 'Game_Logic.py'
-photo_file = game_logic_folder / 'board.jpg'
+photo_file = 'board.jpg'
 
 
 '''
@@ -49,17 +49,21 @@ def joining():
     current_id = player_id
     player_id+=1
     if (player_id == 4):
+        # Temp: skip camera
+        #camera()
         current.startGame()
 
     return jsonify(id=current_id)
 
 @app.route('/game-info')
 def get_game_info():
+    playerColor = ["red", "orange", "white", "blue"]
+
     game_info = {
         "roll": current.lastRoll,
         "players": [
             {
-                "id": player.playerNumber,
+                "color": playerColor[player.playerNumber],
                 "victoryPoints": player.victoryPoints,
                 "hand": {
                     "lumber": player.hand[0],
@@ -126,10 +130,10 @@ def end_turn(id):
     socketio.emit('ended-turn', broadcast=True)
     return jsonify(dice=roll["Roll"], player=roll["Current Player"])
 
-@app.route('/update-resources')
-def update_r():
+@app.route('/update-resources/<int:playerNumber>')
+def update_r(playerNumber):
     global current
-    info = current.playerInfo()
+    info = current.playerInfo(playerNumber)
     return info['Hand']
 
     

@@ -1,13 +1,15 @@
-server = 'http://127.0.0.1:5000';
+server = 'http://127.0.0.1:8000';
 playerId = null;
 
 document.getElementById("start-btn").addEventListener("click", async () => {
     console.log("Start game clicked");
     await joinGame();
-    window.location.href = "game.html";
+    if (localStorage.getItem('playerId') !== null) {
+        window.location.href = "game.html";
+    } else {
+        alert("Failed to join the game. Please check the server and try again.");
+    }
 });
-    document.getElementById('end-turn').addEventListener('click', endTurn);
-    document.getElementById('update').addEventListener('click', update);
 
 async function joinGame() {
     console.log("Attempting to join game...");
