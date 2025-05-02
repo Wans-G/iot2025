@@ -1,4 +1,4 @@
-server = 'http://0.0.0.0:8000';
+server = 'http://127.0.0.1:8000';
 const playerId = localStorage.getItem('playerId');
 
 document.addEventListener('DOMContentLoaded', () => {

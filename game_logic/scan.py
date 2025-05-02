@@ -11,7 +11,7 @@ from openai import OpenAI
 # API Key is expected to be in an environment variable named OPENAI_API_KEY
 API_KEY = os.environ.get("OPENAI_API_KEY")
 # Specify the path to the single tile image you want to analyze
-IMAGE_PATH = "game_logic/split_img/2_tile.jpg"
+IMAGE_PATH = "backend-flask/split_img/3_tile.jpg"
 
 # --- Initialize OpenAI Client ---
 if not API_KEY:
