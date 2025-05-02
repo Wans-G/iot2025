@@ -56,11 +56,13 @@ def joining():
 
 @app.route('/game-info')
 def get_game_info():
+    playerColor = ["red", "orange", "white", "blue"]
+
     game_info = {
         "roll": current.lastRoll,
         "players": [
             {
-                "id": player.playerNumber,
+                "color": playerColor[player.playerNumber],
                 "victoryPoints": player.victoryPoints,
                 "hand": {
                     "lumber": player.hand[0],
@@ -124,7 +126,7 @@ def end_turn(id):
     current.nextTurn()
     roll=current.gameInfo()
     #socketsio.emit('resource-update')
-    return jsonify(dice=roll["Roll"], player=roll[""])
+    return jsonify(dice=roll["Roll"], player=roll["Current_Player"])
 
 @app.route('/update-resources')
 def update_r():
