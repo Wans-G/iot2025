@@ -2,6 +2,7 @@ server = 'http://127.0.0.1:5000';
 const playerId = localStorage.getItem('playerId');
 
 document.addEventListener('DOMContentLoaded', () => {
+    const socket = io('http://localhost:8000');
     getGameInfo();
 });
 
@@ -31,6 +32,17 @@ document.querySelectorAll(".dev-card").forEach(btn => {
         await useDevCard(card, args);
     });
 });
+
+socket.on('ended-turn', function(){
+    updateResources();
+    getGameInfo();    
+});
+
+socket.on('update-resources', function(){
+    updateResources();
+    getGameInfo();    
+});
+
 
 function resourceNameToIndex(name) {
     const map = {

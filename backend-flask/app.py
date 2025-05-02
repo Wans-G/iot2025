@@ -111,6 +111,7 @@ def use_dev_card(card, player_id):
     args = requests.args.get('args')
     args = list(map(int, args.split(','))) if args else []
     success = current.useDevCard(card, player_id, args)
+    socketio.emit('update-resources', broadcast=True)
     return jsonify({"success": success})
 
 @app.route('/end-turn/<int:id>')
@@ -122,7 +123,7 @@ def end_turn(id):
     camera()
     current.nextTurn()
     roll=current.gameInfo()
-    socketio.emit('resource-update', broadcast=True)
+    socketio.emit('ended-turn', broadcast=True)
     return jsonify(dice=roll["Roll"], player=roll["Current Player"])
 
 @app.route('/update-resources')
