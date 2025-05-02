@@ -50,11 +50,13 @@ def joining():
     global player_id
     current_id = player_id
     player_id+=1
-    if (player_id == 4):
-        camera()
-        current.startGame()
-
     return jsonify(id=current_id)
+
+@app.route('/start-game')
+def starting():
+    camera()
+    current.startGame()
+    return jsonify({"success": True})
 
 @app.route('/game-info')
 def get_game_info():

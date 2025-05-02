@@ -9,6 +9,10 @@ async function load() {
     const response = await fetch(`${server}/load`);
 }
 
+async function start() {
+    const response = await fetch(`${server}/start-game`);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Display Player ID
     const playerInfoElement = document.getElementById('player-identity');
