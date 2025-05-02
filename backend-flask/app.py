@@ -113,9 +113,12 @@ def dev_card(id):
 
 @app.route('/use-dev-card/<int:card>/<int:player_id>')
 def use_dev_card(card, player_id):
-    args = requests.args.get('args')
-    args = list(map(int, args.split(','))) if args else []
-    success = current.useDevCard(card, player_id, args)
+    if(card==3 or card==4):
+        args = requests.args.get('args')
+        args = list(map(int, args.split(','))) if args else []
+        success = current.useDevCard(card, player_id, args)
+    else:
+        success = current.useDevCard(card, player_id)
     return jsonify({"success": success})
 
 @app.route('/end-turn/<int:id>')
