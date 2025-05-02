@@ -212,18 +212,19 @@ async function endTurn(){
 
 async function updateResources(){
     try {
-        const response = await fetch(`${server}/update-resources`);
+        const response = await fetch(`${server}/update-resources/${playerId}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const resources = await response.json();
-        
+
+        // Adapt resource names if needed (adjust based on backend response)
         const adaptedResources = {
-            lumber: resources.Wood !== undefined ? resources.Wood : resources.lumber,
-            wool: resources.Sheep !== undefined ? resources.Sheep : resources.wool,
-            grain: resources.Wheat !== undefined ? resources.Wheat : resources.grain,
-            brick: resources.Brick !== undefined ? resources.Brick : resources.brick,
-            ore: resources.Ore !== undefined ? resources.Ore : resources.ore
+            lumber: resources.Wood !== undefined ? resources.Wood : (resources.lumber !== undefined ? resources.lumber : 0),
+            wool: resources.Sheep !== undefined ? resources.Sheep : (resources.wool !== undefined ? resources.wool : 0),
+            grain: resources.Wheat !== undefined ? resources.Wheat : (resources.grain !== undefined ? resources.grain : 0),
+            brick: resources.Brick !== undefined ? resources.Brick : (resources.brick !== undefined ? resources.brick : 0),
+            ore: resources.Ore !== undefined ? resources.Ore : (resources.ore !== undefined ? resources.ore : 0)
         };
 
         updateResourcesDisplay(adaptedResources);
@@ -231,4 +232,3 @@ async function updateResources(){
         console.error("Failed to update resources:", error);
     }
 }
-
