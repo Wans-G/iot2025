@@ -48,16 +48,16 @@ class Game():
         Split_Image.split(input=str(INPUT), output=str(SPLIT_PATH))
         for i in range(19):
             openai = None
+            delay = 0
             while (openai == None):
                 openai = scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg")
-                time.sleep(1)
+                time.sleep(delay)
+                delay = min(delay+1, 5)
             print(openai)
             result = json.loads(openai)
             if (not result["number"] == 0):
                 self.board[result["number"]].append(i)
                 self.tiles[i] = RESOURCE[result["resource"]]
-            time.sleep(1)
-            
 
         print(self.board)
         print(self.tiles)
