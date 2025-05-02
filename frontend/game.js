@@ -31,6 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     getGameInfo();
+
+    // Add listener for refresh button
+    const refreshButton = document.getElementById('refresh-game');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', getGameInfo); // Call existing function
+    } else {
+        console.warn("Element with ID 'refresh-game' not found.");
+    }
 });
 
 document.getElementById('buy-dev-card').addEventListener('click', devCard);
@@ -80,7 +88,7 @@ async function getGameInfo() {
         const data = await response.json();
 
         // Update dice roll
-        document.getElementById("dice-result").textContent = data.roll;
+        document.getElementById("dice-result").textContent = data.roll ?? '--'; // Use nullish coalescing
 
         // Update player list
         const playerList = document.getElementById("player-list");
@@ -129,9 +137,9 @@ async function useDevCard(card, args = []) {
 function updateResourcesDisplay(resourceData) {
     document.querySelectorAll(".resource").forEach(div => {
         const resource = div.dataset.resource.toLowerCase();
-        if (resource in resourceData) {
-            div.querySelector("span").textContent = resourceData[resource];
-        }
+        // Get the value from resourceData, default to 0 if null or undefined
+        const value = resourceData?.[resource] ?? 0;
+        div.querySelector("span").textContent = value;
     });
 }
 
