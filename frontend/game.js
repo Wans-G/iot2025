@@ -88,7 +88,7 @@ async function getGameInfo() {
 
         data.players.forEach(player => {
             const li = document.createElement("li");
-            li.textContent = `Player ${player.id} - Victory Points: ${player.victoryPoints}`;
+            li.textContent = `Player ${player.color} - Victory Points: ${player.victoryPoints}`;
             playerList.appendChild(li);
 
             // If this is *you*, update your resource UI
