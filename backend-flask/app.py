@@ -6,7 +6,6 @@ from pathlib import Path
 import importlib.util
 import time
 import sys
-from database import gameDatabase
 
 #Setting up location for image of board
 current_dir = Path(__file__).resolve().parent
@@ -17,6 +16,7 @@ sys.path.insert(0, str(project_dir))
 
 # Now this import should work````````
 from game_logic.Game_Logic import Game
+from database import gameDatabase
 
 game_logic_folder = project_dir / 'game_logic'
 game_logic_file = game_logic_folder / 'Game_Logic.py'
@@ -156,7 +156,8 @@ def admin():
 def save():
     try:
         database.saveGame("TestGame", current)
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({"success": False})
     return jsonify({"success": True})
 
@@ -164,7 +165,8 @@ def save():
 def load():
     try:
         database.loadGame("TestGame", current)
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({"success": False})
     return jsonify({"success": True})
 
