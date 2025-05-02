@@ -63,6 +63,7 @@ def get_game_info():
         "roll": current.lastRoll,
         "players": [
             {
+                "id": player.playerNumber,
                 "color": playerColor[player.playerNumber],
                 "victoryPoints": player.victoryPoints,
                 "hand": {
@@ -130,10 +131,11 @@ def end_turn(id):
     return jsonify(dice=roll["Roll"], player=roll["Current_Player"])
 
 @app.route('/update-resources/<int:playerNumber>')
-def update_r(playerNumber):
+def update_resources(playerNumber):
     global current
     info = current.playerInfo(playerNumber)
-    return info['Hand']
+    print(info['Hand'])
+    return jsonify(resources=info['Hand'])
 
     
 @app.route('/update/<int:id>')

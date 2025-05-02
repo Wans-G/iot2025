@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add listener for refresh button
     const refreshButton = document.getElementById('refresh-game');
     if (refreshButton) {
-        refreshButton.addEventListener('click', getGameInfo); // Call existing function
+        refreshButton.addEventListener('click', getGameInfo);
     } else {
         console.warn("Element with ID 'refresh-game' not found.");
     }
@@ -86,6 +86,7 @@ async function getGameInfo() {
     try {
         const response = await fetch(`${server}/game-info`);
         const data = await response.json();
+        console.log("Received game data:", JSON.stringify(data, null, 2));
 
         // Update dice roll
         document.getElementById("dice-result").textContent = data.roll ?? '--'; // Use nullish coalescing
@@ -212,7 +213,7 @@ async function endTurn(){
     try{
         const response = await fetch(`${server}/end-turn/${playerId}`);
         
-        getGameInfo();
+        await getGameInfo();
 
 
     }catch(error){
@@ -220,4 +221,26 @@ async function endTurn(){
     }
 }
 
+async function updateResources(){
+    try {
+        const response = await fetch(`${server}/update-resources/${playerId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        const resources = data.resources;
+        console.log("Received resources:", resources);
 
+        const adaptedResources = {
+            lumber: resources["lumber"] == undefined ? 0 : resources["lumber"],
+            wool: resources["wool"] == undefined ? 0 : resources["wool"],
+            grain: resources["grain"] == undefined ? 0 : resources["grain"],
+            brick: resources["brick"] == undefined ? 0 : resources["brick"],
+            ore: resources["ore"] == undefined ? 0 : resources["ore"]
+        };
+
+        updateResourcesDisplay(adaptedResources);
+    } catch (error) {
+        console.error("Failed to update resources:", error);
+    }
+}
