@@ -1,7 +1,7 @@
 from flask import Flask, jsonify
 import requests
 from flask_cors import CORS
-#from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit
 from pathlib import Path
 import importlib.util
 import time
@@ -27,13 +27,13 @@ decrypt_mod = importlib.util.spec_from_file_location("decrypt.py", project_dir +
 decrypt = importlib.util.module_from_spec(decrypt_mod)
 decrypt_mod.loader.exec_module(decrypt)
 '''
-
-player_id = 0
-
+socketio=SocketIO()
 app = Flask(__name__)
 CORS(app)
-#socketsio = SocketIO(app, cors_allowed_origins='*')
+app = socketio.init(app, cors_allowed_origins='*')
 
+
+player_id=0
 session_user_map={}
 
 current = Game()
@@ -122,8 +122,8 @@ def end_turn(id):
     camera()
     current.nextTurn()
     roll=current.gameInfo()
-    #socketsio.emit('resource-update')
-    return jsonify(dice=roll["Roll"], player=roll[""])
+    socketio.emit('resource-update', broadcast=True)
+    return jsonify(dice=roll["Roll"], player=roll["Current Player"])
 
 @app.route('/update-resources')
 def update_r():
@@ -159,5 +159,4 @@ def camera():
     file.close()
 
 if(__name__ == '__main__'):
-    #socketsio.run(app, port=5000,debug=True)
-    app.run(port=8000, debug=True)
+    socketio.run(app)
