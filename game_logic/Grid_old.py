@@ -1,6 +1,6 @@
-from game_logic.Pieces_old import Tile
-from game_logic.Pieces_old import Road
-from game_logic.Pieces_old import Town
+from Pieces_old import Tile
+from Pieces_old import Road
+from Pieces_old import Town
 import numpy as np
 import pygame
 import random

@@ -1,5 +1,6 @@
 from picamera2 import Picamera2, Preview
 from libcamera import Transform
+import requests
 from time import sleep
 
 def capture():
@@ -12,10 +13,11 @@ def capture():
     picam2.start()
     sleep(2)
 
-    picam2.capture_file("board.jpg")
+    image = picam2.capture_image()
 
 
     picam2.close()
+    return image
 
 def preparePhoto():
     path = "/usr/project/board.jpg"
@@ -36,10 +38,14 @@ def preparePhoto():
 
     fin.write(image)
     fin.close()
+
+def pleaseWork():
+    print("Run")
+    return "pleaseWork returned this"
     
+while(1):
+    url = "http://172.23.23.61:3000"
+    my_game_obj
+    waiting = requests.post("http://172.23.23.61:3000", json={'image':pleaseWork()})
 
-
-
-capture()
-preparePhoto()
-
+    

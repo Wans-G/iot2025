@@ -1,7 +1,7 @@
 import pygame
-from game_logic.Pieces_old import Tile
+from Pieces_old import Tile
 import numpy as np
-from game_logic.Grid_old import HexGrid
+from Grid_old import HexGrid
 import random
 
 # Dependencies: Python, pygame, numpy
