@@ -1,4 +1,4 @@
-server = 'http://127.0.0.1:8000';
+server = 'http://0.0.0.0:8000';
 const playerId = localStorage.getItem('playerId');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -163,7 +163,7 @@ async function buildRoad(){
         const data = await response.json();
         
         
-        await updateResources();
+        getGameInfo();
 
     
     }catch(error){
@@ -178,7 +178,7 @@ async function buildSettlement(){
         const data = await response.json();
         
         
-        await updateResources();
+        getGameInfo();
 
     
     }catch(error){
@@ -190,7 +190,8 @@ async function buildCity(){
     try{
         const response = await fetch(`${server}/build-city/${playerId}`);
         const data = await response.json();
-        await updateResources();
+        
+        getGameInfo();
 
     
     }catch(error){
@@ -201,6 +202,7 @@ async function buildCity(){
 async function devCard(){
     try{
         const response = await fetch(`${server}/buy-dev-card/${playerId}`);
+        getGameInfo();
     }catch(error){
         console.error("failed to buy dev card");
     }
@@ -210,7 +212,7 @@ async function endTurn(){
     try{
         const response = await fetch(`${server}/end-turn/${playerId}`);
         
-        await updateResources();
+        getGameInfo();
 
 
     }catch(error){
@@ -218,25 +220,4 @@ async function endTurn(){
     }
 }
 
-async function updateResources(){
-    try {
-        const response = await fetch(`${server}/update-resources/${playerId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const resources = await response.json();
 
-        // Adapt resource names if needed (adjust based on backend response)
-        const adaptedResources = {
-            lumber: resources.Wood !== undefined ? resources.Wood : (resources.lumber !== undefined ? resources.lumber : 0),
-            wool: resources.Sheep !== undefined ? resources.Sheep : (resources.wool !== undefined ? resources.wool : 0),
-            grain: resources.Wheat !== undefined ? resources.Wheat : (resources.grain !== undefined ? resources.grain : 0),
-            brick: resources.Brick !== undefined ? resources.Brick : (resources.brick !== undefined ? resources.brick : 0),
-            ore: resources.Ore !== undefined ? resources.Ore : (resources.ore !== undefined ? resources.ore : 0)
-        };
-
-        updateResourcesDisplay(adaptedResources);
-    } catch (error) {
-        console.error("Failed to update resources:", error);
-    }
-}
