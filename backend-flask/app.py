@@ -1,3 +1,5 @@
+from dotenv import load_dotenv
+load_dotenv()
 from flask import Flask, jsonify
 import requests
 from flask_cors import CORS
@@ -6,6 +8,9 @@ from pathlib import Path
 import importlib.util
 import time
 import sys
+import os
+from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 
 #Setting up location for image of board
 current_dir = Path(__file__).resolve().parent
@@ -22,12 +27,8 @@ game_logic_folder = project_dir / 'game_logic'
 game_logic_file = game_logic_folder / 'Game_Logic.py'
 photo_file = 'board.jpg'
 
+pi = os.environ.get("PI_ADDRESS")
 
-'''
-decrypt_mod = importlib.util.spec_from_file_location("decrypt.py", project_dir + "/decrypt.py")
-decrypt = importlib.util.module_from_spec(decrypt_mod)
-decrypt_mod.loader.exec_module(decrypt)
-'''
 
 player_id = 0
 
@@ -39,6 +40,13 @@ session_user_map={}
 
 current = Game()
 database = gameDatabase()
+
+
+privateKey = RSA.generate(1024)
+public = privateKey.publickey()
+
+requests.post(f"http:{pi}:5000/initial/<{public}>")
+
 
 #main
 @app.route('/')
@@ -174,17 +182,32 @@ def load():
 
 def camera():
     print("starting to shoot a photo")
-    r = requests.post('http://172.23.23.61:5000/take-photo')
+    r = requests.post(f'http://{pi}:5000/take-photo')
     time.sleep(7)
     print('took photo')
-    r2 = requests.get('http://172.23.23.61:5000/get-photo')
+    r2 = requests.get(f'http://{pi}:5000/get-photo')
     image = bytearray(r2.content)
     global game_logic_folder
     global photo_file
     file = open(photo_file, 'wb')
     file.write(image)
     file.close()
+    decrypt(privateKey)
+
+
+def decrypt(privateKey):
+    path = '/usr/project/backend-flask/board.jpg'
+    fin = open(path, 'rb')
+    image = fin.read()
+    fin.close()
+    
+    image = bytearray(image)
+    cipher_rsa = PKCS1_OAEP.new(privateKey)
+    image = cipher_rsa.decrypt(image)
+
+    fin = open(path, 'wb')
+    fin.write(image)
+    fin.close()
 
 if(__name__ == '__main__'):
-    #socketsio.run(app, port=5000,debug=True)
     app.run(port=8000, debug=True)
