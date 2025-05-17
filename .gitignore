@@ -11,3 +11,10 @@ __pycache__/
 *$py.class
 
 game_logic/split_img/*
+
+
+# Node.js dependencies
+/node_modules/
+
+FirebaseKey.json
+

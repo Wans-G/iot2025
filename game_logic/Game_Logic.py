@@ -12,7 +12,7 @@ RESOURCE = {"Wood":0, "Sheep":1, "Wheat":2, "Brick":3, "Ore":4}
 devCard = ["knight", "point", "road", "plenty", "monopoly"]
 deckSetup = [14,5,2,2,2]
 
-SPLIT_PATH = "split_img"
+SPLIT_PATH = "game_logic/split_img"
 INPUT = "board.jpg"
 
 
@@ -20,10 +20,13 @@ class Game():
     def __init__(self):
         self.setup = True
         self.currentTurn = 0
+        self.turnCount = 0
         self.players = [Player(0), Player(1), Player(2), Player(3)]
         self.lastRoll = 0
         self.board = {0:[], 2:[],3:[],4:[],5:[],6:[],8:[],9:[],10:[],11:[],12:[]}
-        self.tiles = [0] * 19 #[4, 2, 0, 1, 0, 4, 1, 0, 4, 1, 3, 2, 0, 3, 1, 2, 3, 2, 0]
+        #self.board = {0: [], 2: [15], 3: [13, 16], 4: [3, 9], 5: [1, 14], 6: [4, 6], 8: [2, 8], 9: [5, 7], 10: [0, 12], 11: [10, 18], 12: [11]}
+        self.tiles = [0] * 19 
+        #self.tiles = [3, 4, 2, 0, 1, 4, 0, 2, 0, 1, 3, 1, 0, 4, 0, 2, 2, 0, 1]
         #self.robber = 0
         self.deck = None
 
@@ -45,19 +48,21 @@ class Game():
 
         # get image
 
+        # TEMP: skip ai scan
         Split_Image.split(input=str(INPUT), output=str(SPLIT_PATH))
         for i in range(19):
             openai = None
+            delay = 0
             while (openai == None):
                 openai = scan.analyze_tile_background(f"{SPLIT_PATH}/{i}_tile.jpg")
-                time.sleep(1)
+                time.sleep(delay)
+                delay = min(delay+1, 5)
             print(openai)
             result = json.loads(openai)
             if (not result["number"] == 0):
                 self.board[result["number"]].append(i)
                 self.tiles[i] = RESOURCE[result["resource"]]
-            time.sleep(1)
-            
+ 
 
         print(self.board)
         print(self.tiles)
@@ -147,6 +152,7 @@ class Game():
         return self.players[player].trade(give, recieve)
 
     def nextTurn(self):
+        self.turnCount += 1
         self.currentTurn = (self.currentTurn + 1) % 4
         number = roll()
         print(number)
@@ -174,10 +180,27 @@ class Game():
                 self.players[p].addResourse(res, t["type"])
             time.sleep(1)
 
-
     def gameInfo(self):
+        if (self.turnCount == 0):
+            return {"Current_Player": self.currentTurn,
+                    "Turn_Number": self.turnCount,
+                    "Roll": self.lastRoll}
         return {"Current_Player": self.currentTurn,
-                "Roll": self.lastRoll}
+                "Turn_Number": self.turnCount,
+                "Roll": self.lastRoll,
+                "Board": self.board,
+                "Tiles": self.tiles}
+    
+    def loadGame(self, info):
+        gameInfo = info["game"]
+        self.currentTurn = gameInfo["Current_Player"]
+        self.turnCount = gameInfo["Turn_Number"]
+        self.lastRoll = gameInfo["Roll"]
+        if (self.currentTurn > 0):
+            self.board = gameInfo["Board"]
+            self.tiles = gameInfo["Tiles"]
+        for i in range(4):
+            self.players[i].loadPlayerInfo(info[str(i)])
     
     def playerInfo(self, playerNumber:int):
         return self.players[playerNumber].playerInfo()
@@ -286,6 +309,23 @@ class Player():
                           devCard[3]: self.devCards[3],
                           devCard[4]: self.devCards[4]}
                 }
+    
+    def loadPlayerInfo(self, info):
+        self.playerNumber = info["Player"]
+        self.victoryPoints = info["Points"]
+        handInfo = info["Hand"]
+        self.hand[0] = handInfo["Wood"]
+        self.hand[1] = handInfo["Sheep"]
+        self.hand[2] = handInfo["Wheat"]
+        self.hand[3] = handInfo["Brick"]
+        self.hand[4] = handInfo["Ore"]
+        cardInfo = info["Cards"]
+        self.devCards[0] = cardInfo[devCard[0]]
+        self.devCards[1] = cardInfo[devCard[1]]
+        self.devCards[2] = cardInfo[devCard[2]]
+        self.devCards[3] = cardInfo[devCard[3]]
+        self.devCards[4] = cardInfo[devCard[4]]
+
 
 
 if (__name__ == "__main__"):

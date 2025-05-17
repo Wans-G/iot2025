@@ -1,6 +1,18 @@
 server = 'http://127.0.0.1:8000';
 const playerId = localStorage.getItem('playerId');
 
+async function save() {
+    const response = await fetch(`${server}/save`);
+}
+
+async function load() {
+    const response = await fetch(`${server}/load`);
+}
+
+async function start() {
+    const response = await fetch(`${server}/start-game`);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Display Player ID
     const playerInfoElement = document.getElementById('player-identity');
@@ -31,6 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     getGameInfo();
+
+    // Add listener for refresh button
+    const refreshButton = document.getElementById('refresh-game');
+    if (refreshButton) {
+        refreshButton.addEventListener('click', getGameInfo);
+    } else {
+        console.warn("Element with ID 'refresh-game' not found.");
+    }
 });
 
 document.getElementById('buy-dev-card').addEventListener('click', devCard);
@@ -78,9 +98,10 @@ async function getGameInfo() {
     try {
         const response = await fetch(`${server}/game-info`);
         const data = await response.json();
+        console.log("Received game data:", JSON.stringify(data, null, 2));
 
         // Update dice roll
-        document.getElementById("dice-result").textContent = data.roll;
+        document.getElementById("dice-result").textContent = data.roll ?? '--'; // Use nullish coalescing
 
         // Update player list
         const playerList = document.getElementById("player-list");
@@ -129,9 +150,9 @@ async function useDevCard(card, args = []) {
 function updateResourcesDisplay(resourceData) {
     document.querySelectorAll(".resource").forEach(div => {
         const resource = div.dataset.resource.toLowerCase();
-        if (resource in resourceData) {
-            div.querySelector("span").textContent = resourceData[resource];
-        }
+        // Get the value from resourceData, default to 0 if null or undefined
+        const value = resourceData?.[resource] ?? 0;
+        div.querySelector("span").textContent = value;
     });
 }
 
@@ -155,7 +176,7 @@ async function buildRoad(){
         const data = await response.json();
         
         
-        await updateResources();
+        getGameInfo();
 
     
     }catch(error){
@@ -170,7 +191,7 @@ async function buildSettlement(){
         const data = await response.json();
         
         
-        await updateResources();
+        getGameInfo();
 
     
     }catch(error){
@@ -182,7 +203,8 @@ async function buildCity(){
     try{
         const response = await fetch(`${server}/build-city/${playerId}`);
         const data = await response.json();
-        await updateResources();
+        
+        getGameInfo();
 
     
     }catch(error){
@@ -193,6 +215,7 @@ async function buildCity(){
 async function devCard(){
     try{
         const response = await fetch(`${server}/buy-dev-card/${playerId}`);
+        getGameInfo();
     }catch(error){
         console.error("failed to buy dev card");
     }
@@ -202,7 +225,7 @@ async function endTurn(){
     try{
         const response = await fetch(`${server}/end-turn/${playerId}`);
         
-        await updateResources();
+        await getGameInfo();
 
 
     }catch(error){
@@ -212,18 +235,20 @@ async function endTurn(){
 
 async function updateResources(){
     try {
-        const response = await fetch(`${server}/update-resources`);
+        const response = await fetch(`${server}/update-resources/${playerId}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const resources = await response.json();
-        
+        const data = await response.json();
+        const resources = data.resources;
+        console.log("Received resources:", resources);
+
         const adaptedResources = {
-            lumber: resources.Wood !== undefined ? resources.Wood : resources.lumber,
-            wool: resources.Sheep !== undefined ? resources.Sheep : resources.wool,
-            grain: resources.Wheat !== undefined ? resources.Wheat : resources.grain,
-            brick: resources.Brick !== undefined ? resources.Brick : resources.brick,
-            ore: resources.Ore !== undefined ? resources.Ore : resources.ore
+            lumber: resources["lumber"] == undefined ? 0 : resources["lumber"],
+            wool: resources["wool"] == undefined ? 0 : resources["wool"],
+            grain: resources["grain"] == undefined ? 0 : resources["grain"],
+            brick: resources["brick"] == undefined ? 0 : resources["brick"],
+            ore: resources["ore"] == undefined ? 0 : resources["ore"]
         };
 
         updateResourcesDisplay(adaptedResources);
@@ -231,4 +256,3 @@ async function updateResources(){
         console.error("Failed to update resources:", error);
     }
 }
-

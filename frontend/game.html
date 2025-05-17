@@ -9,6 +9,7 @@
     <body>
     <div id="player-info" class="section">
         <p id="player-identity">Connecting...</p>
+        <button id="refresh-game">Refresh Game</button>
     </div>
 
     <div id="dice-roll" class="section">
@@ -24,11 +25,11 @@
     <div id="resources" class="section">
         <h2>Your Resources</h2>
         <div class="resources-grid">
-        <div class="resource" data-resource="brick">Brick: <span>na</span></div>
-        <div class="resource" data-resource="lumber">Lumber: <span>na</span></div>
-        <div class="resource" data-resource="ore">Ore: <span>na</span></div>
-        <div class="resource" data-resource="grain">Grain: <span>na</span></div>
-        <div class="resource" data-resource="wool">Wool: <span>na</span></div>
+        <div class="resource" data-resource="brick">Brick: <span>0</span></div>
+        <div class="resource" data-resource="lumber">Lumber: <span>0</span></div>
+        <div class="resource" data-resource="ore">Ore: <span>0</span></div>
+        <div class="resource" data-resource="grain">Grain: <span>0</span></div>
+        <div class="resource" data-resource="wool">Wool: <span>0</span></div>
         </div>
         <button id="trade-4-1">Trade 4:1</button>
     </div>
@@ -51,7 +52,11 @@
             <button class="dev-card" id="dev-road-building" data-card="2">Road Building (<span>0</span>)</button>
             <button class="dev-card" id="dev-year-of-plenty" data-card="3">Year of Plenty (<span>0</span>)</button>
             <button class="dev-card" id="dev-monopoly" data-card="4">Monopoly (<span>0</span>)</button>
-        </div>        
+        </div>
+
+        <button onclick="save()">Save</button>
+        <button onclick="load()">Load</button>
+        <button onclick="start()">Start Game</button>
     </div>
 
     <script src="game.js"></script>
